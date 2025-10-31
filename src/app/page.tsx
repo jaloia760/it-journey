@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <ClientTourKickoff variant="home" />
+      {/* <ClientTourKickoff variant="home" /> */}
       <section className="mb-8">
         <p className="text-slate-600">
           A guided narrative of IT’s evolution. Click any topic to see how it moves from reactive to proactive to autonomous.

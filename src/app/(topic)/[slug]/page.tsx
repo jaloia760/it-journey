@@ -325,7 +325,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
 
 return (
   <div className="space-y-6" data-tour-id="open-demo">
-    <ClientTourKickoff variant="topic" />
+    {/* <ClientTourKickoff variant="topic" /> */}
       <nav className="flex items-center justify-between text-sm text-slate-500 border-b border-slate-200 pb-2" data-tour-id="next-topic">
         <a href="/" className="hover:text-slate-700 transition-colors">← Back to Overview</a>
         <div className="flex gap-3">
