@@ -1,0 +1,15 @@
+{
+  // Use Tailwind’s language server for CSS in this workspace
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // Stop the default CSS validator from flagging Tailwind at-rules
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+
+  // Helpful quality-of-life for class name suggestions
+  "editor.quickSuggestions": { "strings": true },
+  "tailwindCSS.emmetCompletions": true
+}
