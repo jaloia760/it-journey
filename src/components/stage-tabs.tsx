@@ -7,6 +7,7 @@ type Stage = {
   summary: string
   media?: React.ReactNode
   bullets?: string[]
+  personaCard?: React.ReactNode
 }
 
 export default function StageTabs({ stages }: { stages: Stage[] }) {
@@ -22,9 +23,20 @@ export default function StageTabs({ stages }: { stages: Stage[] }) {
             <div className="prose prose-slate max-w-none">
               <p className="text-slate-700">{s.summary}</p>
               {s.bullets && <ul className="mt-4">{s.bullets.map(b => <li key={b}>{b}</li>)}</ul>}
+              {s.personaCard && (
+                <div className="mt-6">
+                  {s.personaCard}
+                </div>
+              )}
             </div>
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              {s.media ?? <div className="p-8 text-slate-400">Add media (iframe/image) here.</div>}
+            <div className="flex items-start justify-end">
+              {s.media ?? (
+                <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                  <div className="p-8 text-slate-400">
+                    Add media (iframe/image) here.
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         </TabsContent>

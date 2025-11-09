@@ -16,6 +16,8 @@ import KnowledgeProactive from "@/components/prototypes/knowledge-proactive"
 import KnowledgeAutonomous from "@/components/prototypes/knowledge-autonomous"
 import Script from "next/script"
 import ClientTourKickoff from "@/components/tour/ClientTourKickoff";
+import { PersonaCard } from "@/components/persona-card";
+import type { PersonaContext } from "@/lib/persona";
 
 export default async function TopicPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -33,6 +35,15 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
     )
   }
 
+  const personaContext: PersonaContext =
+    topic.slug === "incident-management" ? "incident" :
+    topic.slug === "change-risk" ? "change" :
+    topic.slug === "service-health" ? "health" :
+    topic.slug === "request-fulfillment" ? "request" :
+    topic.slug === "asset-config" ? "asset" :
+    topic.slug === "knowledge-insight" ? "knowledge" :
+    "incident";
+
 
   const iframe = (src?: string) =>
     src ? <iframe src={src} className="h-[460px] w-full" allow="fullscreen; clipboard-read; clipboard-write" />
@@ -49,17 +60,27 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         "Resolution relies on manual triage and escalation",
       ],
       media: (
-        <a
-          href="https://gartner2024.freshservice.com/a/tickets/17034"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="/images/react-incident.png"
-            alt="Incident Management Reactive View"
-            className="rounded-xl shadow-md border border-slate-200 hover:shadow-lg transition-shadow duration-200"
-          />
-        </a>
+        <div className="space-y-4">
+          <a
+            href="https://gartner2024.freshservice.com/a/tickets/17034"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/react-incident.png"
+              alt="Incident Management Reactive View"
+              className="rounded-xl shadow-md border border-slate-200 hover:shadow-lg transition-shadow duration-200"
+            />
+          </a>
+        </div>
+      ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="reactive" context={personaContext} />
+        </div>
       ),
     },
     {
@@ -71,7 +92,19 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         "Incident deduplication and service-aware prioritization",
         "One-click orchestration from the ticket",
       ],
-      media: <IncidentProactive />,
+      media: (
+        <div className="space-y-4">
+          <IncidentProactive />
+        </div>
+      ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="proactive" context={personaContext} />
+        </div>
+      ),
     },
     {
       label: "Autonomous" as const,
@@ -82,7 +115,19 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         "Health checks and rollback as guardrails",
         "Auto-close with RCA draft or postmortem stub",
       ],
-      media: <IncidentAutonomous />,
+      media: (
+        <div className="space-y-4">
+          <IncidentAutonomous />
+        </div>
+      ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="autonomous" context={personaContext} />
+        </div>
+      ),
     },
   ] : [
     {
@@ -200,6 +245,14 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           iframe(topic.embeds?.reactive)
         )
       ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="reactive" context={personaContext} />
+        </div>
+      ),
     },
     {
       label: "Proactive" as const,
@@ -259,6 +312,14 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         topic.slug === "asset-config" ? <AssetProactive /> :
         topic.slug === "knowledge-insight" ? <KnowledgeProactive /> :
         iframe(topic.embeds?.proactive)
+      ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="proactive" context={personaContext} />
+        </div>
       ),
     },
     {
@@ -320,76 +381,111 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         topic.slug === "knowledge-insight" ? <KnowledgeAutonomous /> :
         iframe(topic.embeds?.autonomous)
       ),
+      personaCard: (
+        <div>
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+            Persona
+          </div>
+          <PersonaCard stage="autonomous" context={personaContext} />
+        </div>
+      ),
     },
   ]
 
 return (
   <div className="space-y-6" data-tour-id="open-demo">
     {/* <ClientTourKickoff variant="topic" /> */}
-      <nav className="flex items-center justify-between text-sm text-slate-500 border-b border-slate-200 pb-2" data-tour-id="next-topic">
-        <a href="/" className="hover:text-slate-700 transition-colors">← Back to Overview</a>
-        <div className="flex gap-3">
-          {topics.filter(t => t.slug !== topic.slug).map(t => (
-            <a
-              key={t.slug}
-              href={`/${t.slug}`}
-              className="hover:text-indigo-600 transition-colors"
-            >
-              {t.title}
-            </a>
-          ))}
-        </div>
-      </nav>
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{topic.title}</h1>
-        <p className="text-slate-600">{topic.subtitle}</p>
+    <nav className="flex items-center justify-between text-sm text-slate-500 border-b border-slate-200 pb-2" data-tour-id="next-topic">
+      <a href="/" className="hover:text-slate-700 transition-colors">← Back to Overview</a>
+      <div className="flex gap-3">
+        {topics.filter(t => t.slug !== topic.slug).map(t => (
+          <a
+            key={t.slug}
+            href={`/${t.slug}`}
+            className="hover:text-indigo-600 transition-colors"
+          >
+            {t.title}
+          </a>
+        ))}
       </div>
-      <div data-tour-id="stage-tabs">
-        <StageTabs stages={stages} />
-      </div>
-      <Script id="proto-modal-enhancer" strategy="afterInteractive">{`
-        (() => {
-          const apply = () => {
-            var modals = Array.from(document.querySelectorAll('div.fixed.inset-0'));
-            document.body.style.overflow = modals.length ? 'hidden' : '';
-            modals.forEach(function(m) {
-              var container = m.querySelector(
-                'div.bg-white.rounded-xl.shadow-2xl, div.bg-white.rounded-xl, div.bg-white.rounded-lg.shadow-2xl, div.bg-white.rounded-lg'
-              );
-              if (container) {
-                container.style.maxHeight = '90vh';
-                container.style.overflow = 'auto';
-                container.style.display = 'flex';
-                container.style.flexDirection = 'column';
-                container.style.scrollbarGutter = 'stable both-edges';
-                var header = container.querySelector('div.border-b');
-                if (header) {
-                  header.style.position = 'sticky';
-                  header.style.top = '0';
-                  header.style.zIndex = '10';
-                  header.style.background = 'white';
-                }
-                var footer = container.querySelector('div.border-t');
-                if (footer) {
-                  footer.style.position = 'sticky';
-                  footer.style.bottom = '0';
-                  footer.style.zIndex = '10';
-                  footer.style.background = 'white';
-                }
+    </nav>
+    <div>
+      <h1 className="text-2xl font-semibold tracking-tight">{topic.title}</h1>
+      <p className="text-slate-600">{topic.subtitle}</p>
+    </div>
+    <div data-tour-id="stage-tabs">
+      {/* 
+        Custom rendering for StageTabs to place PersonaCard under summary/bullets.
+        We preserve the structure and pass personaCard as a prop to StageTabs, or
+        if StageTabs does not support, we override the tab rendering here.
+      */}
+      <StageTabs
+        stages={stages.map(stage => ({
+          ...stage,
+          left: (
+            <div>
+              <div>
+                <div className="font-semibold mb-1">{stage.summary}</div>
+                <ul className="list-disc pl-5 text-sm text-slate-700">
+                  {stage.bullets.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+                {stage.personaCard && (
+                  <div className="mt-4">
+                    {stage.personaCard}
+                  </div>
+                )}
+              </div>
+            </div>
+          ),
+          right: stage.media,
+        }))}
+      />
+    </div>
+    <Script id="proto-modal-enhancer" strategy="afterInteractive">{`
+      (() => {
+        const apply = () => {
+          var modals = Array.from(document.querySelectorAll('div.fixed.inset-0'));
+          document.body.style.overflow = modals.length ? 'hidden' : '';
+          modals.forEach(function(m) {
+            var container = m.querySelector(
+              'div.bg-white.rounded-xl.shadow-2xl, div.bg-white.rounded-xl, div.bg-white.rounded-lg.shadow-2xl, div.bg-white.rounded-lg'
+            );
+            if (container) {
+              container.style.maxHeight = '90vh';
+              container.style.overflow = 'auto';
+              container.style.display = 'flex';
+              container.style.flexDirection = 'column';
+              container.style.scrollbarGutter = 'stable both-edges';
+              var header = container.querySelector('div.border-b');
+              if (header) {
+                header.style.position = 'sticky';
+                header.style.top = '0';
+                header.style.zIndex = '10';
+                header.style.background = 'white';
               }
-            });
-          };
-          var mo = new MutationObserver(apply);
-          mo.observe(document.documentElement, { subtree: true, childList: true });
-          document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-              var btn = document.querySelector('button[aria-label="Close"], button:has(+ [aria-label="Close"])');
-              if (btn) btn.click();
+              var footer = container.querySelector('div.border-t');
+              if (footer) {
+                footer.style.position = 'sticky';
+                footer.style.bottom = '0';
+                footer.style.zIndex = '10';
+                footer.style.background = 'white';
+              }
             }
           });
-          apply();
-        })();
-      `}</Script>
-    </div>
-  )
+        };
+        var mo = new MutationObserver(apply);
+        mo.observe(document.documentElement, { subtree: true, childList: true });
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            var btn = document.querySelector('button[aria-label="Close"], button:has(+ [aria-label="Close"])');
+            if (btn) btn.click();
+          }
+        });
+        apply();
+      })();
+    `}</Script>
+  </div>
+)
 }
